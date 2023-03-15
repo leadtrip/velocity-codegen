@@ -6,7 +6,6 @@ import org.apache.velocity.app.VelocityEngine;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -17,6 +16,7 @@ public class MicronautAppGenerator {
     static final String MODELS_DIR = GENERATED_DIR + "/models";
     static final String ENDPOINTS_DIR = GENERATED_DIR + "/endpoints";
     static final String SERVICES_DIR = GENERATED_DIR + "/services";
+    static final String TESTS_DIR = GENERATED_DIR + "/tests";
     static final String TEMPLATE_DIR = ROOT_DIR + "/templates";
     static final String DTO_TEMPLATE = TEMPLATE_DIR + "/dto_template.vm";
     static final String ENTITY_TEMPLATE = TEMPLATE_DIR + "/entity_template.vm";
@@ -24,10 +24,13 @@ public class MicronautAppGenerator {
     static final String SERVICE_TEMPLATE = TEMPLATE_DIR + "/service_template.vm";
     static final String CONTROLLER_TEMPLATE = TEMPLATE_DIR + "/controller_template.vm";
     static final String REPOSITORY_TEMPLATE = TEMPLATE_DIR + "/repository_template.vm";
+    static final String CONTROLLER_TEST_TEMPLATE = TEMPLATE_DIR + "/controller_test_template.vm";
+    static final String REPOSITORY_FIXTURE_TEMPLATE = TEMPLATE_DIR + "/repository_fixture_template.vm";
     static final String BASE_PACKAGE = "mn.generated";
     static final String MODELS_PACKAGE = BASE_PACKAGE + ".models";
     static final String ENDPOINTS_PACKAGE = BASE_PACKAGE + ".endpoints";
     static final String SERVICES_PACKAGE = BASE_PACKAGE + ".services";
+    static final String TESTS_PACKAGE = BASE_PACKAGE + ".tests";
 
     static final String ENTITY_NAME = "Employee";
     static final Map<String, String> ENTITY_FIELDS = new LinkedHashMap<>();
@@ -42,11 +45,11 @@ public class MicronautAppGenerator {
         VelocityEngine velocityEngine = new VelocityEngine();
         velocityEngine.init();
         MicronautAppGenerator micronautAppGenerator = new MicronautAppGenerator();
-        micronautAppGenerator.generate();
     }
 
     public MicronautAppGenerator() {
         init();
+        generate();
     }
 
     private VelocityContext context;
@@ -57,7 +60,7 @@ public class MicronautAppGenerator {
         context.put("modelsPkg", MODELS_PACKAGE);
         context.put("endpointsPkg", ENDPOINTS_PACKAGE);
         context.put("servicesPkg", SERVICES_PACKAGE);
-        context.put("pkg", SERVICES_PACKAGE);
+        context.put("testsPkg", TESTS_PACKAGE);
         context.put("entityName", ENTITY_NAME);
         context.put("entityFields", ENTITY_FIELDS);
     }
@@ -66,6 +69,7 @@ public class MicronautAppGenerator {
         generateModels();
         generateServices();
         generateController();
+        generateTests();
     }
 
     void generateModels() {
@@ -77,6 +81,19 @@ public class MicronautAppGenerator {
         generateTransformer();
         generateRepository();
         generateService();
+    }
+
+    void generateTests() {
+        generateRepositoryFixture();
+        generateControllerTest();
+    }
+
+    private void generateRepositoryFixture() {
+        writeFile(context, REPOSITORY_FIXTURE_TEMPLATE,TESTS_DIR + "/" + ENTITY_NAME + "RepositoryFixture.groovy");
+    }
+
+    private void generateControllerTest() {
+        writeFile(context, CONTROLLER_TEST_TEMPLATE,TESTS_DIR + "/" + ENTITY_NAME + "ControllerSpec.groovy");
     }
 
     void generateController() {
@@ -94,8 +111,6 @@ public class MicronautAppGenerator {
     private void generateTransformer() {
         writeFile(context, TRANSFORMER_TEMPLATE,SERVICES_DIR + "/" + ENTITY_NAME + "Transformer.java");
     }
-
-
 
     void generateDto() {
         writeFile(context, DTO_TEMPLATE,MODELS_DIR + "/" + ENTITY_NAME + "Dto.java");

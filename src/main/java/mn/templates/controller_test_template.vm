@@ -1,0 +1,108 @@
+package ${testsPkg}
+
+import ${modelsPkg}.${entityName}Dto;
+import ${modelsPkg}.${entityName}Entity;
+import ai.scheduler.utils.SchedulerTestSecurity
+import io.asterisms.backend.core.testing.application.IntegrationTestSpecification
+import io.asterisms.backend.core.testing.application.TestsAsterismsApplications
+import io.micronaut.core.type.Argument
+import io.micronaut.http.HttpHeaders
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpStatus
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.http.client.exceptions.HttpClientResponseException
+import io.micronaut.reactor.http.client.ReactorStreamingHttpClient
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
+
+#set( $entityId = "${entityName.toLowerCase()}Id" )
+#set( $entityDtoClass = "${entityName}Dto" )
+#set( $entityEntityClass = "${entityName}Entity" )
+#set( $entityDtoVariable = "${entityName.toLowerCase()}Dto" )
+#set( $entityUri = "${entityName.toLowerCase()}s" )
+#set( $entityRepositoryVariable = "${entityName.toLowerCase()}Repository" )
+
+@TestsAsterismsApplications
+@MicronautTest(transactional = false, rebuildContext = true)
+class ${entityName}ControllerSpec extends IntegrationTestSpecification implements SchedulerTestSecurity, ${entityName}RepositoryFixture {
+
+    @Inject
+    @Client("/")
+    ReactorStreamingHttpClient client
+
+    void cleanup() {
+        cleanup${entityName}Entities()
+    }
+
+    void "test create success" () {
+        given:
+            $entityDtoClass createDto = new $entityDtoClass(workspaceId)
+            HttpRequest<?> request = HttpRequest.POST(uri, createDto)
+        when:
+            def resp = client.toBlocking().exchange(request, $entityDtoClass)
+        then:
+            resp.status() == HttpStatus.CREATED
+        when:
+            def id = resp.body().id()
+            $entityEntityClass createEntity = ${entityRepositoryVariable}.findById(id).block()
+        then:
+            id
+            createEntity.workspaceId == createDto.workspaceId()
+        and:
+            resp.header(HttpHeaders.LOCATION) == "$uri/$id"
+    }
+
+    void "test create fail - invalid body" () {
+        given:
+            $entityDtoClass invalidCreateDto = new $entityDtoClass(workspaceId)
+            HttpRequest<?> request = HttpRequest.POST(uri, invalidCreateDto)
+        when:
+            client.toBlocking().exchange(request, $entityDtoClass)
+        then:
+            def e = thrown(HttpClientResponseException)
+            def response = e.response
+            response.status == HttpStatus.BAD_REQUEST
+    }
+
+    void "test update success"() {
+        given:
+            $entityDtoClass createDto = new $entityDtoClass(workspaceId)
+            HttpRequest<?> request = HttpRequest.POST(uri, createDto)
+        when:
+            def resp = client.toBlocking().exchange(request, $entityDtoClass)
+        then:
+            resp.status() == HttpStatus.CREATED
+        when:
+            def id = resp.body().id()
+            $entityDtoClass updateDto = new $entityDtoClass(workspaceId)
+            request = HttpRequest.PUT("$uri/$id", updateDto)
+            client.toBlocking().exchange(request, $entityDtoClass)
+            $entityEntityClass updateEntity = ${entityRepositoryVariable}.findById(id).block()
+        then:
+            updateEntity.id == id
+            updateEntity.workspaceId == updateDto.workspaceId()
+    }
+
+    void "test get single"() {
+        when:
+            load${entityName}Entities(workspaceId)
+            $entityEntityClass entity = ${entityRepositoryVariable}.findAll().blockFirst()
+            HttpRequest<?> request = HttpRequest.GET("$uri/${entity.id}")
+            $entityDtoClass dto = client.toBlocking().exchange(request, $entityDtoClass).body()
+        then:
+            entity.workspaceId == dto.workspaceId()
+    }
+
+    void "test list"() {
+        when:
+            def totalEntities = load${entityName}Entities(workspaceId).size()
+            HttpRequest<?> request = HttpRequest.GET( uri )
+            List<$entityDtoClass> dtos = client.toBlocking().exchange(request, Argument.listOf($entityDtoClass)).body()
+        then:
+            dtos.size() == totalEntities
+    }
+
+    def getUri() {
+        "/api/workspace/$workspaceId/$entityUri"
+    }
+}

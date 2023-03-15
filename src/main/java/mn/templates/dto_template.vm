@@ -15,7 +15,7 @@ public record ${entityName}Dto (
     UUID workspaceId,
 
     #foreach( $entityField in $entityFields.keySet() )
-    $entityFields.get($entityField).substring($entityFields.get($entityField).lastIndexOf(".") +1) $entityField,
+    $entityFields.get($entityField).substring($entityFields.get($entityField).lastIndexOf(".") +1) $entityField#if( $foreach.hasNext ),#end
     #end
 
     ){}

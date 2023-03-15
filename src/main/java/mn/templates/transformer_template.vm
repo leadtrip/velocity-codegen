@@ -12,13 +12,20 @@ public class ${entityName}Transformer {
     public ${entityName}Dto from(${entityName}Entity entity) {
         return new ${entityName}Dto(
             entity.getId(),
-            entity.getWorkspaceId());
+            entity.getWorkspaceId(),
+        #foreach( $entityField in $entityFields.keySet() )
+            entity.get${entityField.substring(0,1).toUpperCase()}${entityField.substring(1)}() #if( $foreach.hasNext ),#end
+        #end
+        );
     }
 
     public ${entityName}Entity to(${entityName}Dto dto, UUID id, UUID workspaceId) {
         ${entityName}Entity entity = new ${entityName}Entity();
         entity.setId(id);
         entity.setWorkspaceId(workspaceId);
+    #foreach( $entityField in $entityFields.keySet() )
+        entity.set${entityField.substring(0,1).toUpperCase()}${entityField.substring(1)}(dto.$entityField());
+    #end
 
         return entity;
     }

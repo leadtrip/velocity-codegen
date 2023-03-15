@@ -34,7 +34,6 @@ public class MicronautAppGenerator {
 
     static final String ENTITY_NAME = "Employee";
     static final Map<String, String> ENTITY_FIELDS = new LinkedHashMap<>();
-
     static {
         ENTITY_FIELDS.put( "accountId", "java.util.UUID" );
         ENTITY_FIELDS.put( "name", "String" );
@@ -44,7 +43,7 @@ public class MicronautAppGenerator {
     public static void main(String[] args) {
         VelocityEngine velocityEngine = new VelocityEngine();
         velocityEngine.init();
-        MicronautAppGenerator micronautAppGenerator = new MicronautAppGenerator();
+        new MicronautAppGenerator();
     }
 
     public MicronautAppGenerator() {

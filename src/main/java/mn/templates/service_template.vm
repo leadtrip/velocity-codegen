@@ -10,7 +10,8 @@ import java.util.UUID;
 #set( $transformerName = "${entityName.toLowerCase()}Transformer" )
 #set( $repositoryName = "${entityName.toLowerCase()}Repository" )
 #set( $entityId = "${entityName.toLowerCase()}Id" )
-#set( $entityDto = "${entityName}Dto" )
+#set( $entityDtoClass = "${entityName}Dto" )
+#set( $entityDtoVariable = "${entityName.toLowerCase()}Dto" )
 
 @Singleton
 public class ${entityName}Service {
@@ -23,23 +24,23 @@ public class ${entityName}Service {
         this.$repositoryName = $repositoryName;
     }
 
-    public Mono<$entityDto> get${entityName}(UUID workspaceId, UUID $entityId) {
+    public Mono<$entityDtoClass> get${entityName}(UUID workspaceId, UUID $entityId) {
         return ${repositoryName}.findByWorkspaceIdAndId(workspaceId, $entityId)
             .map(${transformerName}::from);
     }
 
-    public Flux<$entityDto> listByWorkspace(UUID workspaceId) {
+    public Flux<$entityDtoClass> listByWorkspace(UUID workspaceId) {
         return ${repositoryName}.findAllByWorkspaceId(workspaceId)
         .map(${transformerName}::from);
     }
 
-    public Mono<$entityDto> create($entityDto ${entityDto.toLowerCase()}, UUID workspaceId) {
-        return ${repositoryName}.save(${transformerName}.to(${entityDto.toLowerCase()}, null, workspaceId))
+    public Mono<$entityDtoClass> create($entityDtoClass $entityDtoVariable, UUID workspaceId) {
+        return ${repositoryName}.save(${transformerName}.to($entityDtoVariable, null, workspaceId))
         .map(${transformerName}::from);
     }
 
-    public Mono<$entityDto> update(UUID workspaceId, UUID $entityId, $entityDto ${entityDto.toLowerCase()}) {
-        return ${repositoryName}.update(${transformerName}.to(${entityDto.toLowerCase()}, $entityId, workspaceId))
+    public Mono<$entityDtoClass> update(UUID workspaceId, UUID $entityId, $entityDtoClass $entityDtoVariable) {
+        return ${repositoryName}.update(${transformerName}.to($entityDtoVariable, $entityId, workspaceId))
             .map(${transformerName}::from);
     }
 }

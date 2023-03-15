@@ -22,6 +22,7 @@ public class MicronautAppGenerator {
     static final String ENTITY_TEMPLATE = TEMPLATE_DIR + "/entity_template.vm";
     static final String TRANSFORMER_TEMPLATE = TEMPLATE_DIR + "/transformer_template.vm";
     static final String SERVICE_TEMPLATE = TEMPLATE_DIR + "/service_template.vm";
+    static final String CONTROLLER_TEMPLATE = TEMPLATE_DIR + "/controller_template.vm";
     static final String REPOSITORY_TEMPLATE = TEMPLATE_DIR + "/repository_template.vm";
     static final String BASE_PACKAGE = "mn.generated";
     static final String MODELS_PACKAGE = BASE_PACKAGE + ".models";
@@ -64,6 +65,7 @@ public class MicronautAppGenerator {
     void generate() {
         generateModels();
         generateServices();
+        generateController();
     }
 
     void generateModels() {
@@ -75,6 +77,10 @@ public class MicronautAppGenerator {
         generateTransformer();
         generateRepository();
         generateService();
+    }
+
+    void generateController() {
+        writeFile(context, CONTROLLER_TEMPLATE,ENDPOINTS_DIR + "/" + ENTITY_NAME + "Controller.java");
     }
 
     private void generateService() {

@@ -1,0 +1,70 @@
+package ${endPointsPkg};
+
+import ${modelsPkg}.${entityName}Dto;
+import ${servicesPkg}.${entityName}Service;
+import io.asterisms.security.authorization.rules.annotation.IpcAuthorization;
+import io.asterisms.security.authorization.rules.annotation.RequiresMemberOfWorkspace;
+import io.micronaut.http.HttpResponse;
+import io.micronaut.http.MutableHttpResponse;
+import io.micronaut.http.annotation.*;
+import io.micronaut.scheduling.TaskExecutors;
+import io.micronaut.scheduling.annotation.ExecuteOn;
+import io.micronaut.validation.Validated;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.net.URI;
+import java.util.UUID;
+
+#set( $entityId = "${entityName.toLowerCase()}Id" )
+#set( $entityDtoClass = "${entityName}Dto" )
+#set( $entityDtoVariable = "${entityName.toLowerCase()}Dto" )
+#set( $entityUri = "${entityName.toLowerCase()}s" )
+#set( $entityServiceVariable = "${entityName.toLowerCase()}Service" )
+
+@SecurityRequirement(name = "scheduler-user")
+@Controller("/api/workspace/{workspaceId}/$entityUri")
+@ExecuteOn(TaskExecutors.IO)
+@Validated
+public class ${entityName}Controller {
+
+    private final ${entityName}Service $entityServiceVariable;
+
+    public ${entityName}Controller(${entityName}Service $entityServiceVariable) {
+        this.$entityServiceVariable = $entityServiceVariable;
+    }
+
+    @IpcAuthorization(serviceUrls = "*", exclusive = false)
+    @Get("/{$entityId}")
+    public Mono<$entityDtoClass> get${entityName}(@PathVariable UUID workspaceId, @PathVariable UUID $entityId) {
+        return ${entityServiceVariable}.get${entityName}(workspaceId, $entityId);
+    }
+
+    @IpcAuthorization(serviceUrls = "*", exclusive = false)
+    @RequiresMemberOfWorkspace
+    @Get
+    public Flux<$entityDtoClass> list${entityName}s(@PathVariable UUID workspaceId) {
+        return ${entityServiceVariable}.listByWorkspace(workspaceId);
+    }
+
+    @IpcAuthorization(serviceUrls = "*", exclusive = false)
+    @RequiresMemberOfWorkspace
+    @Post
+    public Mono<MutableHttpResponse<$entityDtoClass>> create(@PathVariable UUID workspaceId, @Body $entityDtoClass $entityDtoVariable) {
+        return Mono.from( ${entityServiceVariable}.create($entityDtoVariable, workspaceId) )
+        .map( crDto -> HttpResponse.created( crDto )
+        .headers(headers -> headers.location(location(workspaceId, crDto.id()))));
+    }
+
+    @IpcAuthorization(serviceUrls = "*", exclusive = false)
+    @RequiresMemberOfWorkspace
+    @Put("/{$entityId}")
+    public Mono<$entityDtoClass> update(@PathVariable UUID workspaceId, @PathVariable UUID $entityId, @Body $entityDtoClass $entityDtoVariable) {
+            return ${entityServiceVariable}.update(workspaceId, $entityId, $entityDtoVariable);
+    }
+
+    private URI location(UUID workspaceId, UUID id) {
+        return URI.create("/api/workspace/" + workspaceId + "/$entityUri/" + id);
+    }
+}

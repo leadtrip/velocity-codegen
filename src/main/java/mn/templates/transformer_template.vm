@@ -14,7 +14,7 @@ public class ${entityName}Transformer {
             entity.getId(),
             entity.getWorkspaceId(),
         #foreach( $entityField in $entityFields.keySet() )
-            entity.get${entityField.substring(0,1).toUpperCase()}${entityField.substring(1)}() #if( $foreach.hasNext ),#end
+            entity.get${entityField.substring(0,1).toUpperCase()}${entityField.substring(1)}()#if( $foreach.hasNext ),#end
         #end
         );
     }

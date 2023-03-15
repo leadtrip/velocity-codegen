@@ -31,12 +31,12 @@ public class ${entityName}Service {
 
     public Flux<$entityDtoClass> listByWorkspace(UUID workspaceId) {
         return ${repositoryName}.findAllByWorkspaceId(workspaceId)
-        .map(${transformerName}::from);
+            .map(${transformerName}::from);
     }
 
     public Mono<$entityDtoClass> create($entityDtoClass $entityDtoVariable, UUID workspaceId) {
         return ${repositoryName}.save(${transformerName}.to($entityDtoVariable, null, workspaceId))
-        .map(${transformerName}::from);
+            .map(${transformerName}::from);
     }
 
     public Mono<$entityDtoClass> update(UUID workspaceId, UUID $entityId, $entityDtoClass $entityDtoVariable) {

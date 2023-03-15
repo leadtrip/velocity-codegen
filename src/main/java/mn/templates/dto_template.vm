@@ -5,6 +5,11 @@ import io.micronaut.core.annotation.NonNull;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.UUID;
+#foreach( $entityFieldType in $entityFields.values())
+#if($entityFieldType.contains(".") && !$entityFieldType.contains('UUID'))
+import $entityFieldType;
+#end
+#end
 
 @Introspected
 public record ${entityName}Dto (

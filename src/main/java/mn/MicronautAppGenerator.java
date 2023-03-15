@@ -38,6 +38,7 @@ public class MicronautAppGenerator {
         ENTITY_FIELDS.put( "accountId", "java.util.UUID" );
         ENTITY_FIELDS.put( "name", "String" );
         ENTITY_FIELDS.put( "description", "String" );
+        ENTITY_FIELDS.put( "startDateTime", "java.time.Instant" );
     }
 
     public static void main(String[] args) {

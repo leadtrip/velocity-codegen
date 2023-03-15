@@ -1,0 +1,1 @@
+### Generate various moving parts of an application from minimal config

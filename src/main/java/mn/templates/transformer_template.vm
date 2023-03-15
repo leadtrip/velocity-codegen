@@ -1,0 +1,25 @@
+package ${servicesPkg};
+
+import ${modelsPkg}.${entityName}Dto;
+import ${modelsPkg}.${entityName}Entity;
+import jakarta.inject.Singleton;
+
+import java.util.UUID;
+
+@Singleton
+public class ${entityName}Transformer {
+
+    public ${entityName}Dto from(${entityName}Entity entity) {
+        return new ${entityName}Dto(
+            entity.getId(),
+            entity.getWorkspaceId());
+    }
+
+    public ${entityName}Entity to(${entityName}Dto dto, UUID id, UUID workspaceId) {
+        ${entityName}Entity entity = new ${entityName}Entity();
+        entity.setId(id);
+        entity.setWorkspaceId(workspaceId);
+
+        return entity;
+    }
+}

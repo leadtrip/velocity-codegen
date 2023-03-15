@@ -1,0 +1,29 @@
+package ${modelsPkg};
+
+import io.micronaut.data.annotation.AutoPopulated;
+import io.micronaut.data.annotation.Id;
+import io.micronaut.data.annotation.MappedEntity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
+import java.util.UUID;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@MappedEntity("${entityName.toLowerCase()}")
+public class ${entityName}Entity {
+    @Id
+    @AutoPopulated
+    private UUID id;
+
+    @Column(nullable = false)
+    private UUID workspaceId;
+
+    #foreach( $entityField in $entityFields.keySet() )
+    @Column
+    $entityFields.get($entityField).substring($entityFields.get($entityField).lastIndexOf(".") +1) $entityField;
+    #end
+}

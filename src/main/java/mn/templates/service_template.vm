@@ -1,0 +1,45 @@
+package ${servicesPkg};
+
+import ${modelsPkg}.${entityName}Dto;
+import jakarta.inject.Singleton;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.UUID;
+
+#set( $transformerName = "${entityName.toLowerCase()}Transformer" )
+#set( $repositoryName = "${entityName.toLowerCase()}Repository" )
+#set( $entityId = "${entityName.toLowerCase()}Id" )
+#set( $entityDto = "${entityName}Dto" )
+
+@Singleton
+public class ${entityName}Service {
+
+    private final ${entityName}Transformer $transformerName;
+    private final ${entityName}Repository $repositoryName;
+
+    public ${entityName}Service(${entityName}Transformer $transformerName, ${entityName}Repository $repositoryName) {
+        this.$transformerName = $transformerName;
+        this.$repositoryName = $repositoryName;
+    }
+
+    public Mono<$entityDto> get${entityName}(UUID workspaceId, UUID $entityId) {
+        return ${repositoryName}.findByWorkspaceIdAndId(workspaceId, $entityId)
+            .map(${transformerName}::from);
+    }
+
+    public Flux<$entityDto> listByWorkspace(UUID workspaceId) {
+        return ${repositoryName}.findAllByWorkspaceId(workspaceId)
+        .map(${transformerName}::from);
+    }
+
+    public Mono<$entityDto> create($entityDto ${entityDto.toLowerCase()}, UUID workspaceId) {
+        return ${repositoryName}.save(${transformerName}.to(${entityDto.toLowerCase()}, null, workspaceId))
+        .map(${transformerName}::from);
+    }
+
+    public Mono<$entityDto> update(UUID workspaceId, UUID $entityId, $entityDto ${entityDto.toLowerCase()}) {
+        return ${repositoryName}.update(${transformerName}.to(${entityDto.toLowerCase()}, $entityId, workspaceId))
+            .map(${transformerName}::from);
+    }
+}

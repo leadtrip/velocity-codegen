@@ -1,0 +1,21 @@
+package ${modelsPkg};
+
+import io.micronaut.core.annotation.Introspected;
+import io.micronaut.core.annotation.NonNull;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.UUID;
+
+@Introspected
+public record ${entityName}Dto (
+
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    UUID id,
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    UUID workspaceId,
+
+    #foreach( $entityField in $entityFields.keySet() )
+    $entityFields.get($entityField).substring($entityFields.get($entityField).lastIndexOf(".") +1) $entityField,
+    #end
+
+    ){}

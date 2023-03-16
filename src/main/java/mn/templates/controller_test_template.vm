@@ -1,3 +1,9 @@
+#set( $entityId = "${entityName.toLowerCase()}Id" )
+#set( $entityDtoClass = "${entityName}Dto" )
+#set( $entityEntityClass = "${entityName}Entity" )
+#set( $entityDtoVariable = "${entityName.toLowerCase()}Dto" )
+#set( $entityUri = "${entityName.toLowerCase()}s" )
+#set( $entityRepositoryVariable = "${entityName.toLowerCase()}Repository" )
 package ${testsPkg}
 
 import ${modelsPkg}.${entityName}Dto;
@@ -15,13 +21,6 @@ import io.micronaut.reactor.http.client.ReactorStreamingHttpClient
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import jakarta.inject.Inject
 
-#set( $entityId = "${entityName.toLowerCase()}Id" )
-#set( $entityDtoClass = "${entityName}Dto" )
-#set( $entityEntityClass = "${entityName}Entity" )
-#set( $entityDtoVariable = "${entityName.toLowerCase()}Dto" )
-#set( $entityUri = "${entityName.toLowerCase()}s" )
-#set( $entityRepositoryVariable = "${entityName.toLowerCase()}Repository" )
-
 @TestsAsterismsApplications
 @MicronautTest(transactional = false, rebuildContext = true)
 class ${entityName}ControllerSpec extends IntegrationTestSpecification implements SchedulerTestSecurity, ${entityName}RepositoryFixture {
@@ -36,6 +35,7 @@ class ${entityName}ControllerSpec extends IntegrationTestSpecification implement
 
     void "test create success" () {
         given:
+            $testConstructorTodo
             $entityDtoClass createDto = new $entityDtoClass(workspaceId)
             HttpRequest<?> request = HttpRequest.POST(uri, createDto)
         when:
@@ -54,6 +54,7 @@ class ${entityName}ControllerSpec extends IntegrationTestSpecification implement
 
     void "test create fail - invalid body" () {
         given:
+            $testConstructorTodo
             $entityDtoClass invalidCreateDto = new $entityDtoClass(workspaceId)
             HttpRequest<?> request = HttpRequest.POST(uri, invalidCreateDto)
         when:
@@ -66,6 +67,7 @@ class ${entityName}ControllerSpec extends IntegrationTestSpecification implement
 
     void "test update success"() {
         given:
+            $testConstructorTodo
             $entityDtoClass createDto = new $entityDtoClass(workspaceId)
             HttpRequest<?> request = HttpRequest.POST(uri, createDto)
         when:
@@ -74,6 +76,7 @@ class ${entityName}ControllerSpec extends IntegrationTestSpecification implement
             resp.status() == HttpStatus.CREATED
         when:
             def id = resp.body().id()
+            $testConstructorTodo
             $entityDtoClass updateDto = new $entityDtoClass(workspaceId)
             request = HttpRequest.PUT("$uri/$id", updateDto)
             client.toBlocking().exchange(request, $entityDtoClass)

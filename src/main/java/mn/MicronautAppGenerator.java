@@ -34,13 +34,12 @@ public class MicronautAppGenerator {
     static final String SERVICES_PACKAGE = BASE_PACKAGE + ".services";
     static final String TESTS_PACKAGE = BASE_PACKAGE + ".tests";
 
+    static final String TEST_CONSTRUCTOR_TODO = "//TODO fill constructor with appropriate values for test";
     static final String ENTITY_NAME = "Employee";
     static final Map<String, String> ENTITY_FIELDS = new LinkedHashMap<>();
     static {
-        ENTITY_FIELDS.put( "accountId", "java.util.UUID" );
         ENTITY_FIELDS.put( "name", "String" );
-        ENTITY_FIELDS.put( "description", "String" );
-        ENTITY_FIELDS.put( "startDateTime", "java.time.Instant" );
+        ENTITY_FIELDS.put( "accountId", "java.util.UUID" );
     }
 
     public static void main(String[] args) {
@@ -64,6 +63,7 @@ public class MicronautAppGenerator {
         context.put("testsPkg", TESTS_PACKAGE);
         context.put("entityName", ENTITY_NAME);
         context.put("entityFields", ENTITY_FIELDS);
+        context.put("testConstructorTodo", TEST_CONSTRUCTOR_TODO);
     }
 
     void generate() {

@@ -1,3 +1,8 @@
+#set( $transformerName = "${entityName.toLowerCase()}Transformer" )
+#set( $repositoryName = "${entityName.toLowerCase()}Repository" )
+#set( $entityId = "${entityName.toLowerCase()}Id" )
+#set( $entityDtoClass = "${entityName}Dto" )
+#set( $entityDtoVariable = "${entityName.toLowerCase()}Dto" )
 package ${servicesPkg};
 
 import ${modelsPkg}.${entityName}Dto;
@@ -6,12 +11,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
-
-#set( $transformerName = "${entityName.toLowerCase()}Transformer" )
-#set( $repositoryName = "${entityName.toLowerCase()}Repository" )
-#set( $entityId = "${entityName.toLowerCase()}Id" )
-#set( $entityDtoClass = "${entityName}Dto" )
-#set( $entityDtoVariable = "${entityName.toLowerCase()}Dto" )
 
 @Singleton
 public class ${entityName}Service {

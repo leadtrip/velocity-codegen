@@ -1,10 +1,9 @@
+#set( $entityRepositoryVariable = "${entityName.toLowerCase()}Repository" )
 package ${testsPkg}
 
 import ${modelsPkg}.${entityName}Entity;
 import ${servicesPkg}.${entityName}Repository;
 import jakarta.inject.Inject
-
-#set( $entityRepositoryVariable = "${entityName.toLowerCase()}Repository" )
 
 trait ${entityName}RepositoryFixture {
 
@@ -19,10 +18,14 @@ trait ${entityName}RepositoryFixture {
         ${entityRepositoryVariable}.saveAll(${entityName.toLowerCase()}Entities(workspaceId)).collectList().block()
     }
 
-    def ${entityName.toLowerCase()}Entities(UUID workspaceId ) {
+    /**
+    * Generate some test entities
+    **/
+    def ${entityName.toLowerCase()}Entities(UUID workspaceId) {
         (1..5).collect{
             new ${entityName}Entity(
-            workspaceId: workspaceId
+                workspaceId: workspaceId
+                $testConstructorTodo
         )
     }
 

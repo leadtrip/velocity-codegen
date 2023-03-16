@@ -23,12 +23,10 @@ public class ${entityName}Entity {
     @Id
     @AutoPopulated
     private UUID id;
-
     @Column(nullable = false)
     private UUID workspaceId;
-
     #foreach( $entityField in $entityFields.keySet() )
-    @Column
+    @Column(nullable = false)
     $entityFields.get($entityField).substring($entityFields.get($entityField).lastIndexOf(".") +1) $entityField;
     #end
 }

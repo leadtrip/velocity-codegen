@@ -1,3 +1,8 @@
+#set( $entityId = "${entityName.toLowerCase()}Id" )
+#set( $entityDtoClass = "${entityName}Dto" )
+#set( $entityDtoVariable = "${entityName.toLowerCase()}Dto" )
+#set( $entityUri = "${entityName.toLowerCase()}s" )
+#set( $entityServiceVariable = "${entityName.toLowerCase()}Service" )
 package ${endpointsPkg};
 
 import ${modelsPkg}.${entityName}Dto;
@@ -16,12 +21,6 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.UUID;
-
-#set( $entityId = "${entityName.toLowerCase()}Id" )
-#set( $entityDtoClass = "${entityName}Dto" )
-#set( $entityDtoVariable = "${entityName.toLowerCase()}Dto" )
-#set( $entityUri = "${entityName.toLowerCase()}s" )
-#set( $entityServiceVariable = "${entityName.toLowerCase()}Service" )
 
 @SecurityRequirement(name = "scheduler-user")
 @Controller("/api/workspace/{workspaceId}/$entityUri")
@@ -53,8 +52,8 @@ public class ${entityName}Controller {
     @Post
     public Mono<MutableHttpResponse<$entityDtoClass>> create(@PathVariable UUID workspaceId, @Body $entityDtoClass $entityDtoVariable) {
         return Mono.from( ${entityServiceVariable}.create($entityDtoVariable, workspaceId) )
-        .map( crDto -> HttpResponse.created( crDto )
-        .headers(headers -> headers.location(location(workspaceId, crDto.id()))));
+            .map( crDto -> HttpResponse.created( crDto )
+            .headers(headers -> headers.location(location(workspaceId, crDto.id()))));
     }
 
     @IpcAuthorization(serviceUrls = "*", exclusive = false)

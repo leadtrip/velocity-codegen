@@ -15,5 +15,4 @@ public interface ${entityName}Repository extends ReactorCrudRepository<${entityN
     Flux<${entityName}Entity> findAllByWorkspaceId(UUID workspaceId);
 
     Mono<${entityName}Entity> findByWorkspaceIdAndId(UUID workspaceId, UUID id);
-
 }

@@ -1,5 +1,0 @@
-#foreach( $entityFieldType in $entityFields.values())
-#if($entityFieldType.contains(".") && !$entityFieldType.contains('UUID'))
-import $entityFieldType;
-#end
-#end

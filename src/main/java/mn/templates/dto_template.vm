@@ -13,14 +13,16 @@ import $entityFieldType;
 
 @Introspected
 public record ${entityName}Dto (
-
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     UUID id,
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     UUID workspaceId,
-
     #foreach( $entityField in $entityFields.keySet() )
+    @NonNull
     $entityFields.get($entityField).substring($entityFields.get($entityField).lastIndexOf(".") +1) $entityField#if( $foreach.hasNext ),#end
     #end
-
-    ){}
+    ){
+    public ${entityName}Dto( UUID workspaceId, #foreach( $entityField in $entityFields.keySet() )$entityFields.get($entityField).substring($entityFields.get($entityField).lastIndexOf(".") +1) $entityField#if( $foreach.hasNext ),#end #end) {
+        this(null, workspaceId, #foreach( $entityField in $entityFields.keySet() ) $entityField#if( $foreach.hasNext ),#end #end);
+    }
+}

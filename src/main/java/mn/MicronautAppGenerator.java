@@ -17,6 +17,7 @@ public class MicronautAppGenerator {
     static final String ENDPOINTS_DIR = GENERATED_DIR + "/endpoints";
     static final String SERVICES_DIR = GENERATED_DIR + "/services";
     static final String TESTS_DIR = GENERATED_DIR + "/tests";
+    static final String OTHER_DIR = GENERATED_DIR + "/other";
     static final String TEMPLATE_DIR = ROOT_DIR + "/templates";
     static final String DTO_TEMPLATE = TEMPLATE_DIR + "/dto_template.vm";
     static final String ENTITY_TEMPLATE = TEMPLATE_DIR + "/entity_template.vm";
@@ -26,6 +27,7 @@ public class MicronautAppGenerator {
     static final String REPOSITORY_TEMPLATE = TEMPLATE_DIR + "/repository_template.vm";
     static final String CONTROLLER_TEST_TEMPLATE = TEMPLATE_DIR + "/controller_test_template.vm";
     static final String REPOSITORY_FIXTURE_TEMPLATE = TEMPLATE_DIR + "/repository_fixture_template.vm";
+    static final String POSTMAN_COLLECTION_TEMPLATE = TEMPLATE_DIR + "/postman_template.vm";
     static final String BASE_PACKAGE = "mn.generated";
     static final String MODELS_PACKAGE = BASE_PACKAGE + ".models";
     static final String ENDPOINTS_PACKAGE = BASE_PACKAGE + ".endpoints";
@@ -42,8 +44,7 @@ public class MicronautAppGenerator {
     }
 
     public static void main(String[] args) {
-        VelocityEngine velocityEngine = new VelocityEngine();
-        velocityEngine.init();
+        new VelocityEngine().init();
         new MicronautAppGenerator();
     }
 
@@ -70,6 +71,11 @@ public class MicronautAppGenerator {
         generateServices();
         generateController();
         generateTests();
+        generatePostmanCollection();
+    }
+
+    private void generatePostmanCollection() {
+        writeFile(context, POSTMAN_COLLECTION_TEMPLATE,OTHER_DIR + "/" + ENTITY_NAME + "Postman.json");
     }
 
     void generateModels() {

@@ -1,4 +1,4 @@
-package ${endPointsPkg};
+package ${endpointsPkg};
 
 import ${modelsPkg}.${entityName}Dto;
 import ${servicesPkg}.${entityName}Service;

@@ -47,7 +47,7 @@ class ${entityName}ControllerSpec extends IntegrationTestSpecification implement
             $entityEntityClass createEntity = ${entityRepositoryVariable}.findById(id).block()
         then:
             id
-            createEntity.workspaceId == createDto.workspaceId()
+            compare(createEntity, createDto)
         and:
             resp.header(HttpHeaders.LOCATION) == "$uri/$id"
     }
@@ -83,7 +83,7 @@ class ${entityName}ControllerSpec extends IntegrationTestSpecification implement
             $entityEntityClass updateEntity = ${entityRepositoryVariable}.findById(id).block()
         then:
             updateEntity.id == id
-            updateEntity.workspaceId == updateDto.workspaceId()
+            compare(updateEntity, updateDto)
     }
 
     void "test get single"() {
@@ -93,7 +93,7 @@ class ${entityName}ControllerSpec extends IntegrationTestSpecification implement
             HttpRequest<?> request = HttpRequest.GET("$uri/${entity.id}")
             $entityDtoClass dto = client.toBlocking().exchange(request, $entityDtoClass).body()
         then:
-            entity.workspaceId == dto.workspaceId()
+            compare(entity, dto)
     }
 
     void "test list"() {
@@ -103,6 +103,13 @@ class ${entityName}ControllerSpec extends IntegrationTestSpecification implement
             List<$entityDtoClass> dtos = client.toBlocking().exchange(request, Argument.listOf($entityDtoClass)).body()
         then:
             dtos.size() == totalEntities
+    }
+
+    void compare( ${entityName}Entity entity, ${entityName}Dto dto ) {
+        assert entity.workspaceId == dto.workspaceId()
+        #foreach( $entityField in $entityFields.keySet() )
+        assert entity.$entityField == dto.$entityField()
+        #end
     }
 
     def getUri() {

@@ -13,13 +13,18 @@ import java.util.Map;
 
 public class MicronautAppGenerator {
 
-    static final String ENTITY_NAME = "Employee";
+    // The name of the entity we're going to generate code for
+    static final String ENTITY_NAME = "Campaign";
+    // The entity fields excluding id and workspaceId which are added automatically
     static final Map<String, String> ENTITY_FIELDS = new LinkedHashMap<>();
     static {
-        ENTITY_FIELDS.put( "name", "String" );
-        ENTITY_FIELDS.put( "accountId", "java.util.UUID" );
+       ENTITY_FIELDS.put("name", "String");
+       ENTITY_FIELDS.put("deadline", "java.time.Instant");
+       ENTITY_FIELDS.put("asSoonAsPossible", "boolean");
     }
     static final String BASE_PACKAGE = "ai.scheduler." + ENTITY_NAME.toLowerCase();
+
+    // Directories
     static final String ROOT_DIR = "src/main/java/mn";
     static final String GENERATED_DIR = ROOT_DIR + "/generated/" + BASE_PACKAGE.replaceAll("\\.", "/");
     static final String MODELS_DIR = GENERATED_DIR + "/models";
@@ -28,6 +33,8 @@ public class MicronautAppGenerator {
     static final String TESTS_DIR = GENERATED_DIR + "/tests";
     static final String OTHER_DIR = GENERATED_DIR + "/other";
     static final String TEMPLATE_DIR = ROOT_DIR + "/templates";
+
+    // Template files
     static final String DTO_TEMPLATE = TEMPLATE_DIR + "/dto_template.vm";
     static final String ENTITY_TEMPLATE = TEMPLATE_DIR + "/entity_template.vm";
     static final String TRANSFORMER_TEMPLATE = TEMPLATE_DIR + "/transformer_template.vm";
@@ -37,6 +44,8 @@ public class MicronautAppGenerator {
     static final String CONTROLLER_TEST_TEMPLATE = TEMPLATE_DIR + "/controller_test_template.vm";
     static final String REPOSITORY_FIXTURE_TEMPLATE = TEMPLATE_DIR + "/repository_fixture_template.vm";
     static final String POSTMAN_COLLECTION_TEMPLATE = TEMPLATE_DIR + "/postman_template.vm";
+
+    // Package names
     static final String MODELS_PACKAGE = BASE_PACKAGE + ".models";
     static final String ENDPOINTS_PACKAGE = BASE_PACKAGE + ".endpoints";
     static final String SERVICES_PACKAGE = BASE_PACKAGE + ".services";
@@ -72,7 +81,6 @@ public class MicronautAppGenerator {
 
     void init() {
         context = new VelocityContext();
-        context.put("basePkg", BASE_PACKAGE);
         context.put("modelsPkg", MODELS_PACKAGE);
         context.put("endpointsPkg", ENDPOINTS_PACKAGE);
         context.put("servicesPkg", SERVICES_PACKAGE);

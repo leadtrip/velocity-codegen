@@ -27,6 +27,6 @@ public class ${entityName}Entity {
     private UUID workspaceId;
     #foreach( $entityField in $entityFields.keySet() )
     @Column(nullable = false)
-    $entityFields.get($entityField).substring($entityFields.get($entityField).lastIndexOf(".") +1) $entityField;
+    private $entityFields.get($entityField).substring($entityFields.get($entityField).lastIndexOf(".") +1) $entityField;
     #end
 }

@@ -12,6 +12,8 @@ import ai.scheduler.utils.SchedulerTestSecurity
 import io.asterisms.backend.core.testing.application.IntegrationTestSpecification
 import io.asterisms.backend.core.testing.application.TestsAsterismsApplications
 import io.micronaut.core.type.Argument
+import io.micronaut.core.util.StringUtils
+import io.micronaut.context.annotation.Property
 import io.micronaut.http.HttpHeaders
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
@@ -21,6 +23,7 @@ import io.micronaut.reactor.http.client.ReactorStreamingHttpClient
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import jakarta.inject.Inject
 
+@Property(name = "asterisms.security.filter.pattern", value = StringUtils.FALSE)
 @TestsAsterismsApplications
 @MicronautTest(transactional = false, rebuildContext = true)
 class ${entityName}ControllerSpec extends IntegrationTestSpecification implements SchedulerTestSecurity, ${entityName}RepositoryFixture {

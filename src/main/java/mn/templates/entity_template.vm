@@ -1,13 +1,10 @@
 package ${modelsPkg};
 
-import io.micronaut.data.annotation.AutoPopulated;
-import io.micronaut.data.annotation.Id;
-import io.micronaut.data.annotation.MappedEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 import java.util.UUID;
 #foreach( $entityFieldType in $entityFields.values())
 #if($entityFieldType.contains(".") && !$entityFieldType.contains('UUID'))
@@ -18,10 +15,11 @@ import $entityFieldType;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@MappedEntity("${entityName.toLowerCase()}")
+@Entity
+@Table(name = "${entityName.toLowerCase()}")
 public class ${entityName}Entity {
     @Id
-    @AutoPopulated
+    @GeneratedValue
     private UUID id;
     @Column(nullable = false)
     private UUID workspaceId;
